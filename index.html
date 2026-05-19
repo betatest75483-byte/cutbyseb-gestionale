@@ -4,14 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Conteggio Ore">
-<title>Conteggio Ore — Gestionale Pulizie</title>
+<meta name="apple-mobile-web-app-title" content="Cut by Seb">
+<title>Cut by Seb — Gestionale</title>
 <style>
   :root {
-    --blu: #2563EB;
-    --blu-light: #60A5FA;
-    --blu-dark: #1D4ED8;
-    --blu-pale: #0A1628;
+    --rosso: #9B1D2A;
+    --rosso-light: #C4404F;
+    --rosso-dark: #6B0F1A;
+    --rosso-pale: #1A0508;
     --black: #0A0A0A;
     --dark: #111111;
     --dark2: #1A1A1A;
@@ -30,24 +30,27 @@
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--black); color: var(--text); min-height: 100vh; max-width: 480px; margin: 0 auto; }
 
+  /* TOP BAR */
   .top-bar { background: var(--dark); padding: 14px 18px 12px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
   .salon-logo { display: flex; align-items: center; gap: 10px; }
-  .salon-icon { width: 36px; height: 36px; background: var(--blu); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
-  .salon-name { font-size: 16px; font-weight: 800; letter-spacing: 0.04em; color: var(--text); }
+  .salon-icon { width: 36px; height: 36px; background: var(--rosso); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+  .salon-name { font-size: 16px; font-weight: 800; letter-spacing: 0.06em; color: var(--text); }
   .salon-sub { font-size: 9px; color: var(--text3); letter-spacing: 0.16em; text-transform: uppercase; margin-top: 1px; }
   .top-date { font-size: 12px; color: var(--text3); }
 
+  /* NAV */
   .nav-tabs { display: flex; background: var(--dark); border-bottom: 1px solid var(--border); position: sticky; top: 63px; z-index: 10; }
   .nav-tab { flex: 1; padding: 10px 2px 8px; font-size: 9px; color: var(--text3); text-align: center; cursor: pointer; border: none; background: transparent; display: flex; flex-direction: column; align-items: center; gap: 3px; border-bottom: 2px solid transparent; letter-spacing: 0.04em; text-transform: uppercase; }
   .nav-tab svg { width: 18px; height: 18px; }
-  .nav-tab.active { color: var(--blu-light); border-bottom-color: var(--blu); }
+  .nav-tab.active { color: var(--rosso-light); border-bottom-color: var(--rosso); }
 
+  /* SCREENS */
   .screen { display: none; padding: 14px; }
   .screen.active { display: block; }
 
-  /* STATS */
+  /* CARDS */
   .day-total { background: var(--dark); border-radius: var(--radius); padding: 16px 18px; display: flex; justify-content: space-between; margin-bottom: 12px; border: 1px solid var(--border); position: relative; overflow: hidden; }
-  .day-total::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--blu-dark), var(--blu-light), var(--blu-dark)); }
+  .day-total::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--rosso-dark), var(--rosso-light), var(--rosso-dark)); }
   .day-total .label { font-size: 10px; color: var(--text3); margin-bottom: 4px; letter-spacing: 0.08em; text-transform: uppercase; }
   .day-total .value { font-size: 22px; font-weight: 700; color: var(--text); }
   .day-total .profit { font-size: 20px; font-weight: 700; color: var(--success); }
@@ -57,89 +60,110 @@
   .stat-mini-val { font-size: 18px; font-weight: 700; color: var(--text); }
   .stat-mini-lbl { font-size: 9px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px; }
 
-  .cat-label { font-size: 10px; font-weight: 700; color: var(--blu-light); text-transform: uppercase; letter-spacing: 0.14em; margin: 16px 0 10px; display: flex; align-items: center; gap: 10px; }
+  .cat-label { font-size: 10px; font-weight: 700; color: var(--rosso-light); text-transform: uppercase; letter-spacing: 0.14em; margin: 16px 0 10px; display: flex; align-items: center; gap: 10px; }
   .cat-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
-  /* APPUNTAMENTO CARD */
-  .appt-card { background: var(--dark); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 8px; position: relative; overflow: hidden; cursor: pointer; transition: border-color 0.15s; }
-  .appt-card:active { border-color: var(--blu); }
-  .appt-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; }
-  .appt-card.pagato::before { background: var(--success); }
-  .appt-card.da-pagare::before { background: var(--warning); }
-  .appt-card.annullato::before { background: var(--text3); opacity: 0.3; }
-  .appt-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 6px; }
-  .appt-cliente { font-size: 15px; font-weight: 700; color: var(--text); }
-  .appt-stato { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.05em; flex-shrink: 0; }
-  .appt-stato.pagato { background: #0D1A12; color: var(--success); }
-  .appt-stato.da-pagare { background: #1A1200; color: var(--warning); }
-  .appt-stato.annullato { background: var(--dark3); color: var(--text3); }
-  .appt-dettagli { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 8px; }
-  .appt-det { font-size: 11px; color: var(--text3); }
-  .appt-det strong { color: var(--text2); }
-  .appt-footer { display: flex; align-items: center; justify-content: space-between; }
-  .appt-importo { font-size: 16px; font-weight: 700; color: var(--blu-light); }
-  .btn-paga { padding: 7px 14px; background: var(--success); color: #fff; border: none; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; }
-  .btn-edit-a { padding: 7px 10px; background: transparent; color: var(--text3); border: 1px solid var(--border); border-radius: 8px; font-size: 12px; cursor: pointer; }
+  /* SERVIZI */
+  .servizi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+  .service-btn { background: var(--dark); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; cursor: pointer; position: relative; transition: border-color 0.15s; text-align: left; }
+  .service-btn:active { border-color: var(--rosso); }
+  .service-btn.tapped { background: var(--rosso-pale); border-color: var(--rosso); }
+  .service-btn .s-nome { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+  .service-btn .s-cat { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
+  .service-btn .s-prezzo { font-size: 15px; font-weight: 800; color: var(--rosso-light); }
+  .service-btn .badge { position: absolute; top: -7px; right: -7px; background: var(--rosso); color: #fff; font-size: 11px; font-weight: 800; border-radius: 10px; padding: 2px 8px; min-width: 22px; display: none; text-align: center; }
+  .badge.show { display: block; }
 
-  .appt-card.futuro { border-color: var(--blu-dark); }
-  .appt-card.futuro::before { background: var(--blu); }
-  .appt-luogo { font-size: 11px; color: var(--blu-light); margin-top: 3px; display: flex; align-items: center; gap: 4px; }
-  .prossimo-badge { background: var(--blu-pale); color: var(--blu-light); font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.05em; flex-shrink: 0; }
-  .btn-add { width: 100%; padding: 13px; background: transparent; border: 1px dashed var(--blu-dark); border-radius: var(--radius); color: var(--blu-light); font-size: 14px; font-weight: 600; cursor: pointer; margin-bottom: 12px; }
+  .carrello-bar { background: var(--dark); border: 1px solid var(--rosso); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; }
+  .carrello-bar.empty { opacity: 0.4; border-color: var(--border); }
+  .cart-info { font-size: 13px; color: var(--text2); }
+  .cart-total { font-size: 18px; font-weight: 800; color: var(--rosso-light); }
+  .btn-vendi { padding: 10px 20px; background: var(--rosso); color: #fff; border: none; border-radius: 10px; font-size: 14px; font-weight: 800; cursor: pointer; }
+  .btn-vendi:disabled { opacity: 0.4; }
 
-  /* CLIENTI */
-  .cliente-card { background: var(--dark); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 8px; cursor: pointer; }
-  .cliente-card:active { border-color: var(--blu); }
-  .cliente-nome { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
-  .cliente-tariffa { font-size: 12px; color: var(--blu-light); margin-bottom: 4px; }
-  .cliente-stats { display: flex; gap: 16px; }
-  .cliente-stat { font-size: 11px; color: var(--text3); }
-  .cliente-stat strong { color: var(--text2); }
-  .da-pagare-badge { background: #1A1200; color: var(--warning); font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px; margin-left: auto; }
+  /* VENDITE */
+  .vendita-item { background: var(--dark); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 14px; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; }
+  .vendita-info .v-servizi { font-size: 13px; font-weight: 600; color: var(--text); }
+  .vendita-info .v-ora { font-size: 11px; color: var(--text3); margin-top: 2px; }
+  .vendita-info .v-prezzo { font-size: 12px; color: var(--rosso-light); margin-top: 2px; }
+  .vendita-totale { font-size: 17px; font-weight: 800; color: var(--text); }
+
+  /* AGENDA */
+  .week-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .week-nav-btn { background: var(--dark); border: 1px solid var(--border); color: var(--text); border-radius: 10px; padding: 8px 14px; font-size: 18px; cursor: pointer; }
+  .week-days { display: flex; gap: 6px; margin-bottom: 12px; overflow-x: auto; scrollbar-width: none; }
+  .week-days::-webkit-scrollbar { display: none; }
+  .week-day { flex-shrink: 0; width: 46px; background: var(--dark); border: 1px solid var(--border); border-radius: 12px; padding: 8px 4px; text-align: center; cursor: pointer; }
+  .week-day.active { background: var(--rosso); border-color: var(--rosso); }
+  .week-day.today { border-color: var(--rosso-light); }
+  .week-day.chiuso { opacity: 0.35; }
+  .wd-giorno { font-size: 9px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; }
+  .week-day.active .wd-giorno { color: rgba(255,255,255,0.7); }
+  .wd-num { font-size: 17px; font-weight: 700; color: var(--text); margin: 2px 0; }
+  .wd-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--rosso-light); margin: 2px auto 0; }
+
+  .agenda-orari { display: flex; flex-direction: column; gap: 0; }
+  .time-block { display: flex; align-items: stretch; min-height: 44px; border-bottom: 1px solid var(--border); }
+  .time-block.pausa { background: var(--dark); opacity: 0.4; }
+  .time-label { width: 52px; flex-shrink: 0; font-size: 11px; color: var(--text3); padding: 6px 8px; display: flex; align-items: flex-start; padding-top: 8px; }
+  .slot-area { flex: 1; padding: 4px 6px; cursor: pointer; display: flex; align-items: center; }
+  .slot-vuoto { font-size: 12px; color: var(--border2); }
+  .appt-block { border-radius: 10px; padding: 7px 10px; width: 100%; }
+  .appt-block.color-1 { background: #1A0508; border-left: 3px solid var(--rosso); }
+  .appt-block.color-2 { background: #0D1A12; border-left: 3px solid var(--success); }
+  .appt-block.color-3 { background: #1A1200; border-left: 3px solid var(--warning); }
+  .appt-nome { font-size: 13px; font-weight: 700; color: var(--text); }
+  .appt-servizio { font-size: 11px; color: var(--text2); margin-top: 1px; }
+  .appt-prezzo { font-size: 11px; color: var(--rosso-light); margin-top: 2px; }
+
+  .chiuso-banner { background: var(--dark); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; text-align: center; color: var(--text3); font-size: 14px; }
 
   /* REPORT */
   .period-filter { display: flex; gap: 6px; margin-bottom: 14px; overflow-x: auto; scrollbar-width: none; }
   .period-filter::-webkit-scrollbar { display: none; }
   .period-btn { flex-shrink: 0; padding: 7px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: var(--dark); color: var(--text3); }
-  .period-btn.active { background: var(--blu); color: #fff; border-color: var(--blu); }
+  .period-btn.active { background: var(--rosso); color: #fff; border-color: var(--rosso); }
 
   .stat-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 8px; margin-bottom: 12px; }
   .stat-card { background: var(--dark); border-radius: var(--radius); padding: 14px; border: 1px solid var(--border); }
   .stat-card .s-label { font-size: 10px; color: var(--text3); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.06em; }
   .stat-card .s-value { font-size: 20px; font-weight: 700; color: var(--text); }
-  .stat-card .s-value.blu { color: var(--blu-light); }
+  .stat-card .s-value.rosso { color: var(--rosso-light); }
   .stat-card .s-value.green { color: var(--success); }
-  .stat-card .s-value.warn { color: var(--warning); }
 
   .highlight { border-radius: var(--radius); padding: 14px 16px; margin-bottom: 8px; display: flex; align-items: center; gap: 14px; border: 1px solid; }
-  .highlight.blu { background: var(--blu-pale); border-color: #1E3A6E; }
-  .highlight.warn { background: #1A1200; border-color: #3A2800; }
+  .highlight.rosso { background: var(--rosso-pale); border-color: #3A0F18; }
   .highlight.green { background: #0D1A12; border-color: #1A3A24; }
   .highlight .icon { font-size: 22px; }
   .highlight .h-label { font-size: 10px; color: var(--text3); margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.06em; }
   .highlight .h-value { font-size: 14px; font-weight: 700; }
-  .highlight.blu .h-value { color: var(--blu-light); }
-  .highlight.warn .h-value { color: var(--warning); }
+  .highlight.rosso .h-value { color: var(--rosso-light); }
   .highlight.green .h-value { color: var(--success); }
 
-  .report-list { background: var(--dark); border-radius: var(--radius); border: 1px solid var(--border); overflow: hidden; }
-  .report-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border-bottom: 1px solid var(--border); }
-  .report-row:last-child { border-bottom: none; }
-  .r-data { font-size: 11px; color: var(--blu-light); font-weight: 700; }
-  .r-cliente { font-size: 13px; font-weight: 600; color: var(--text); margin: 2px 0; }
-  .r-ore { font-size: 11px; color: var(--text3); }
-  .r-importo { font-size: 15px; font-weight: 700; color: var(--blu-light); text-align: right; }
-  .r-stato { font-size: 10px; font-weight: 700; text-align: right; margin-top: 2px; }
-  .r-stato.pagato { color: var(--success); }
-  .r-stato.da-pagare { color: var(--warning); }
+  .top-servizi { background: var(--dark); border-radius: var(--radius); border: 1px solid var(--border); overflow: hidden; margin-bottom: 8px; }
+  .top-row { display: flex; align-items: center; justify-content: space-between; padding: 11px 14px; border-bottom: 1px solid var(--border); }
+  .top-row:last-child { border-bottom: none; }
+  .top-nome { font-size: 13px; font-weight: 600; color: var(--text); }
+  .top-qty { font-size: 12px; color: var(--text3); }
+  .top-tot { font-size: 14px; font-weight: 700; color: var(--rosso-light); }
 
   /* ADMIN */
-  .admin-card { background: var(--dark); border-radius: var(--radius); border: 1px solid var(--border); overflow: hidden; margin-bottom: 10px; }
-  .admin-row { display: flex; align-items: center; justify-content: space-between; padding: 13px 16px; border-bottom: 1px solid var(--border); cursor: pointer; }
+  .admin-section { margin-bottom: 14px; }
+  .admin-title { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 10px; }
+  .admin-card { background: var(--dark); border-radius: var(--radius); border: 1px solid var(--border); overflow: hidden; }
+  .admin-row { display: flex; align-items: center; justify-content: space-between; padding: 13px 16px; border-bottom: 1px solid var(--border); }
   .admin-row:last-child { border-bottom: none; }
   .admin-row-name { font-size: 13px; font-weight: 600; color: var(--text); }
   .admin-row-sub { font-size: 11px; color: var(--text3); margin-top: 2px; }
-  .admin-row-val { font-size: 14px; font-weight: 700; color: var(--blu-light); }
+  .admin-row-val { font-size: 14px; font-weight: 700; color: var(--rosso-light); }
+
+  /* CATALOGO ADMIN */
+  .prod-item { display: flex; align-items: center; gap: 10px; padding: 11px 14px; border-bottom: 1px solid var(--border); }
+  .prod-item:last-child { border-bottom: none; }
+  .prod-nome { flex: 1; font-size: 13px; font-weight: 600; color: var(--text); }
+  .prod-cat { font-size: 10px; color: var(--text3); margin-top: 2px; text-transform: uppercase; }
+  .prod-prezzo { font-size: 15px; font-weight: 800; color: var(--rosso-light); }
+  .prod-edit { padding: 6px 10px; background: transparent; border: 1px solid var(--border); border-radius: 8px; color: var(--text3); font-size: 12px; cursor: pointer; }
 
   /* OVERLAYS */
   .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 50; align-items: flex-end; justify-content: center; }
@@ -150,117 +174,127 @@
   .sheet p { font-size: 13px; color: var(--text3); margin-bottom: 16px; }
   .field-label { font-size: 11px; color: var(--text3); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.06em; }
   .field-input { width: 100%; padding: 13px 16px; border: 1px solid var(--border); border-radius: 12px; font-size: 15px; outline: none; background: var(--dark3); color: var(--text); margin-bottom: 12px; }
-  .field-input:focus { border-color: var(--blu); }
+  .field-input:focus { border-color: var(--rosso); }
   .field-select { width: 100%; padding: 13px 16px; border: 1px solid var(--border); border-radius: 12px; font-size: 15px; outline: none; background: var(--dark3); color: var(--text); margin-bottom: 12px; appearance: none; }
-  .field-select:focus { border-color: var(--blu); }
+  .field-select:focus { border-color: var(--rosso); }
   .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
-  .btn-blu { width: 100%; padding: 14px; background: var(--blu); color: #fff; border: none; border-radius: 12px; font-size: 15px; font-weight: 800; cursor: pointer; margin-top: 4px; }
+  .btn-rosso { width: 100%; padding: 14px; background: var(--rosso); color: #fff; border: none; border-radius: 12px; font-size: 15px; font-weight: 800; cursor: pointer; margin-top: 4px; }
   .btn-success { width: 100%; padding: 14px; background: var(--success); color: #fff; border: none; border-radius: 12px; font-size: 15px; font-weight: 800; cursor: pointer; margin-top: 4px; }
   .btn-danger { width: 100%; padding: 12px; background: transparent; color: var(--danger); border: 1px solid #3A2020; border-radius: 12px; font-size: 14px; cursor: pointer; margin-top: 8px; }
   .btn-cancel { width: 100%; padding: 12px; background: transparent; color: var(--text3); border: none; font-size: 15px; cursor: pointer; margin-top: 6px; }
 
-  /* RIEPILOGO IMPORTO */
-  .importo-preview { background: var(--dark3); border-radius: 12px; padding: 14px 16px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; }
-  .importo-label { font-size: 12px; color: var(--text3); }
-  .importo-val { font-size: 20px; font-weight: 800; color: var(--blu-light); }
+  /* ORARI ADMIN */
+  .orario-row { background: var(--dark3); border-radius: 10px; padding: 12px 14px; margin-bottom: 8px; }
+  .orario-giorno { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+  .orario-toggle { display: flex; align-items: center; justify-content: space-between; }
+  .toggle-lbl { font-size: 13px; color: var(--text2); }
+  .toggle-btn { width: 44px; height: 24px; border-radius: 12px; background: var(--border); border: none; cursor: pointer; position: relative; transition: background 0.2s; }
+  .toggle-btn.on { background: var(--rosso); }
+  .toggle-btn::after { content: ''; position: absolute; width: 20px; height: 20px; background: #fff; border-radius: 50%; top: 2px; left: 2px; transition: left 0.2s; }
+  .toggle-btn.on::after { left: 22px; }
+  .orario-fasce { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
+  .fascia-input { flex: 1; min-width: 80px; padding: 8px 10px; background: var(--dark4); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 13px; outline: none; }
+  .fascia-input:focus { border-color: var(--rosso); }
+  .fascia-sep { color: var(--text3); display: flex; align-items: center; font-size: 12px; }
 
   /* PIN */
   .pin-dots { display: flex; gap: 14px; justify-content: center; margin: 24px 0 28px; }
   .pin-dot { width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--border); }
-  .pin-dot.filled { background: var(--blu); border-color: var(--blu); }
+  .pin-dot.filled { background: var(--rosso); border-color: var(--rosso); }
   .pin-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
   .pin-btn { background: var(--dark3); border: 1px solid var(--border); border-radius: 14px; padding: 18px; font-size: 22px; font-weight: 600; color: var(--text); cursor: pointer; text-align: center; }
-  .pin-btn:active { border-color: var(--blu); }
+  .pin-btn:active { border-color: var(--rosso); }
   .pin-error { color: var(--danger); font-size: 13px; text-align: center; margin-top: 12px; }
 
+  /* LOADING */
   #loading { position: fixed; inset: 0; background: var(--black); display: flex; align-items: center; justify-content: center; z-index: 300; flex-direction: column; gap: 16px; }
-  .loading-logo { font-size: 24px; font-weight: 800; color: var(--blu-light); letter-spacing: 0.06em; }
+  .loading-logo { font-size: 24px; font-weight: 800; letter-spacing: 0.1em; color: var(--rosso-light); }
   .loading-sub { font-size: 11px; color: var(--text3); letter-spacing: 0.2em; text-transform: uppercase; }
-  .spinner { width: 28px; height: 28px; border: 2px solid var(--border); border-top-color: var(--blu); border-radius: 50%; animation: spin 0.8s linear infinite; }
+  .spinner { width: 28px; height: 28px; border: 2px solid var(--border); border-top-color: var(--rosso); border-radius: 50%; animation: spin 0.8s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  #toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--dark2); color: var(--text); border: 1px solid var(--blu); border-radius: 20px; padding: 11px 22px; font-size: 13px; opacity: 0; transition: all 0.22s ease; pointer-events: none; white-space: nowrap; z-index: 200; }
+  #toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--dark2); color: var(--text); border: 1px solid var(--rosso); border-radius: 20px; padding: 11px 22px; font-size: 13px; opacity: 0; transition: all 0.22s ease; pointer-events: none; white-space: nowrap; z-index: 200; }
   #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
   #toast.err { border-color: var(--danger); color: var(--danger); }
+
   .empty-state { padding: 32px; text-align: center; color: var(--text3); font-size: 14px; }
   .empty-icon { font-size: 36px; margin-bottom: 10px; }
+  .btn-add { width: 100%; padding: 13px; background: transparent; border: 1px dashed var(--rosso-dark); border-radius: var(--radius); color: var(--rosso-light); font-size: 14px; font-weight: 600; cursor: pointer; margin-bottom: 12px; }
 </style>
 </head>
 <body>
 
 <div id="loading">
-  <div class="loading-logo">🧹 Conteggio Ore</div>
-  <div class="loading-sub">Gestionale Pulizie</div>
+  <div class="loading-logo">✂ CUT BY SEB</div>
+  <div class="loading-sub">Barbiere · Bolotana</div>
   <div class="spinner"></div>
+</div>
+
+<!-- OVERLAY CLIENTE -->
+<div class="overlay" id="cliente-overlay">
+  <div class="sheet"><div class="sheet-handle"></div>
+    <h3>Conferma vendita</h3>
+    <p id="vendita-riepilogo">Riepilogo servizi selezionati</p>
+    <div class="field-label">Nome cliente (opzionale)</div>
+    <input class="field-input" type="text" id="v-cliente" placeholder="Es. Marco Rossi">
+    <div class="field-label">Metodo di pagamento</div>
+    <select class="field-select" id="v-pagamento">
+      <option value="contanti">💵 Contanti</option>
+      <option value="carta">💳 Carta</option>
+      <option value="bonifico">📱 Bonifico / Satispay</option>
+    </select>
+    <button class="btn-rosso" onclick="confermaVendita()">✓ Conferma vendita</button>
+    <button class="btn-cancel" onclick="chiudiOverlay('cliente-overlay')">Annulla</button>
+  </div>
 </div>
 
 <!-- OVERLAY APPUNTAMENTO -->
 <div class="overlay" id="appt-overlay">
   <div class="sheet"><div class="sheet-handle"></div>
     <h3 id="appt-title">Nuovo appuntamento</h3>
-    <p id="appt-sub">Registra un'ora di lavoro</p>
-    <div class="field-label">Cliente</div>
-    <select class="field-select" id="appt-cliente" onchange="aggiornaTariffa()">
-      <option value="">Seleziona cliente...</option>
-    </select>
+    <p id="appt-sub">Aggiungi un appuntamento</p>
+    <div class="field-label">Nome cliente</div>
+    <input class="field-input" type="text" id="appt-cliente" placeholder="Es. Marco Rossi">
     <div class="row-2">
       <div><div class="field-label">Data</div><input class="field-input" type="date" id="appt-data"></div>
-      <div><div class="field-label">Ora inizio</div><input class="field-input" type="time" id="appt-ora"></div>
+      <div><div class="field-label">Ora</div>
+        <select class="field-select" id="appt-ora"></select>
+      </div>
     </div>
-    <div class="field-label">Ore lavorate</div>
-    <select class="field-select" id="appt-ore" onchange="aggiornaTariffa()">
-      <option value="1">1 ora</option>
-      <option value="1.5">1 ora e mezza</option>
-      <option value="2">2 ore</option>
-      <option value="2.5">2 ore e mezza</option>
-      <option value="3">3 ore</option>
-      <option value="3.5">3 ore e mezza</option>
-      <option value="4">4 ore</option>
-      <option value="5">5 ore</option>
-      <option value="6">6 ore</option>
-    </select>
-    <div class="importo-preview">
-      <div><div class="importo-label">Tariffa</div><div style="font-size:13px;color:var(--text2);margin-top:2px" id="tariffa-info">—</div></div>
-      <div class="importo-val" id="importo-preview">0,00 €</div>
-    </div>
-    <div class="field-label">Stato pagamento</div>
-    <select class="field-select" id="appt-stato">
-      <option value="da-pagare">⏳ Da pagare</option>
-      <option value="pagato">✅ Già pagato</option>
-    </select>
+    <div class="field-label">Servizio</div>
+    <select class="field-select" id="appt-servizio"></select>
+    <div class="field-label">Telefono (opzionale)</div>
+    <input class="field-input" type="tel" id="appt-telefono" placeholder="+39 347 1234567" inputmode="tel">
     <div class="field-label">Note (opzionale)</div>
-    <input class="field-input" type="text" id="appt-note" placeholder="Es. pulizia straordinaria, finestre...">
-    <div class="field-label">Luogo / Indirizzo</div>
-    <input class="field-input" type="text" id="appt-luogo" placeholder="Es. Via Roma 12, Bolotana">
-    <button class="btn-blu" onclick="salvaAppuntamento()">Salva</button>
-    <button class="btn-success" id="btn-segna-pagato" onclick="segnaPagato()" style="display:none">✓ Segna come pagato</button>
-    <button class="btn-danger" id="btn-elimina-appt" onclick="eliminaAppuntamento()" style="display:none">Elimina</button>
+    <input class="field-input" type="text" id="appt-note" placeholder="Es. prima visita, allergie...">
+    <button class="btn-rosso" onclick="salvaAppuntamento()">Salva appuntamento</button>
+    <button class="btn-danger" id="btn-elimina-appt" onclick="eliminaAppuntamento()" style="display:none">Elimina appuntamento</button>
     <button class="btn-cancel" onclick="chiudiOverlay('appt-overlay')">Annulla</button>
   </div>
 </div>
 
-<!-- OVERLAY CLIENTE -->
-<div class="overlay" id="cliente-overlay">
+<!-- OVERLAY PRODOTTO ADMIN -->
+<div class="overlay" id="prod-overlay">
   <div class="sheet"><div class="sheet-handle"></div>
-    <h3 id="cliente-title">Nuovo cliente</h3>
-    <div class="field-label">Nome cliente</div>
-    <input class="field-input" type="text" id="c-nome" placeholder="Es. Signora Maria">
-    <div class="field-label">Tariffa oraria (€)</div>
+    <h3 id="prod-title">Modifica servizio</h3>
+    <div class="field-label">Nome servizio</div>
+    <input class="field-input" type="text" id="p-nome" placeholder="Es. Taglio uomo">
+    <div class="field-label">Categoria</div>
+    <select class="field-select" id="p-cat">
+      <option value="Taglio">Taglio</option>
+      <option value="Barba">Barba</option>
+      <option value="Colore">Colore</option>
+      <option value="Styling">Styling</option>
+      <option value="Trattamenti">Trattamenti</option>
+      <option value="Altro">Altro</option>
+    </select>
     <div class="row-2">
-      <button type="button" class="field-input" id="btn-tariffa-10" onclick="setTariffa(10)" style="cursor:pointer;text-align:center;font-weight:700;color:var(--text2)">10 €/ora</button>
-      <button type="button" class="field-input" id="btn-tariffa-12" onclick="setTariffa(12)" style="cursor:pointer;text-align:center;font-weight:700;color:var(--text2)">12 €/ora</button>
+      <div><div class="field-label">Prezzo (€)</div><input class="field-input" type="number" id="p-prezzo" inputmode="decimal" placeholder="15"></div>
+      <div><div class="field-label">Costo (€)</div><input class="field-input" type="number" id="p-costo" inputmode="decimal" placeholder="2"></div>
     </div>
-    <input type="hidden" id="c-tariffa" value="12">
-    <div class="field-label">Telefono (opzionale)</div>
-    <input class="field-input" type="tel" id="c-telefono" placeholder="+39 347 1234567" inputmode="tel">
-    <div class="field-label">Indirizzo (opzionale)</div>
-    <input class="field-input" type="text" id="c-indirizzo" placeholder="Es. Via Roma 12, Bolotana">
-    <div class="field-label">Note (opzionale)</div>
-    <input class="field-input" type="text" id="c-note" placeholder="Es. ogni martedì mattina">
-    <button class="btn-blu" onclick="salvaCliente()">Salva cliente</button>
-    <button class="btn-danger" id="btn-elimina-cliente" onclick="eliminaCliente()" style="display:none">Elimina cliente</button>
-    <button class="btn-cancel" onclick="chiudiOverlay('cliente-overlay')">Annulla</button>
+    <button class="btn-rosso" onclick="salvaProdotto()">Salva</button>
+    <button class="btn-danger" id="btn-elimina-prod" onclick="eliminaProdotto()" style="display:none">Elimina servizio</button>
+    <button class="btn-cancel" onclick="chiudiOverlay('prod-overlay')">Annulla</button>
   </div>
 </div>
 
@@ -286,8 +320,8 @@
 <!-- TOP BAR -->
 <div class="top-bar">
   <div class="salon-logo">
-    <div class="salon-icon">🧹</div>
-    <div><div class="salon-name">Conteggio Ore</div><div class="salon-sub">Gestionale Pulizie</div></div>
+    <div class="salon-icon">✂</div>
+    <div><div class="salon-name">CUT BY SEB</div><div class="salon-sub">Barbiere · Bolotana</div></div>
   </div>
   <span class="top-date" id="today-label"></span>
 </div>
@@ -300,9 +334,6 @@
   <button class="nav-tab" id="tab-agenda" onclick="showScreen('agenda')">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Agenda
   </button>
-  <button class="nav-tab" id="tab-clienti" onclick="showScreen('clienti')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/><path d="M16 3.13a4 4 0 010 7.75"/><path d="M21 21v-2a4 4 0 00-3-3.85"/></svg>Clienti
-  </button>
   <button class="nav-tab" id="tab-report" onclick="showScreen('report')">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Report
   </button>
@@ -314,99 +345,121 @@
 <!-- OGGI -->
 <div id="screen-oggi" class="screen active">
   <div class="day-total">
-    <div><div class="label">Guadagnato oggi</div><div class="value" id="oggi-guadagno">0,00 €</div></div>
-    <div style="text-align:right"><div class="label">Ore lavorate</div><div class="profit" id="oggi-ore">0h</div></div>
+    <div><div class="label">Incasso oggi</div><div class="value" id="oggi-incasso">0,00 €</div></div>
+    <div style="text-align:right"><div class="label">Margine netto</div><div class="profit" id="oggi-margine">0,00 €</div></div>
   </div>
   <div class="stat-mini-grid">
     <div class="stat-mini"><div class="stat-mini-val" id="oggi-clienti">0</div><div class="stat-mini-lbl">Clienti</div></div>
-    <div class="stat-mini"><div class="stat-mini-val" id="oggi-pagato" style="color:var(--success)">0 €</div><div class="stat-mini-lbl">Incassato</div></div>
-    <div class="stat-mini"><div class="stat-mini-val" id="oggi-da-pagare" style="color:var(--warning)">0 €</div><div class="stat-mini-lbl">Da incassare</div></div>
+    <div class="stat-mini"><div class="stat-mini-val" id="oggi-servizi">0</div><div class="stat-mini-lbl">Servizi</div></div>
+    <div class="stat-mini"><div class="stat-mini-val" id="oggi-appuntamenti">0</div><div class="stat-mini-lbl">Appuntam.</div></div>
   </div>
-  <button class="btn-add" onclick="apriNuovoAppt()">+ Registra ore di lavoro</button>
-  <div class="cat-label">Lavori di oggi</div>
-  <div id="oggi-list"></div>
+
+  <div class="cat-label">Registra servizio</div>
+  <div class="servizi-grid" id="servizi-grid"></div>
+
+  <div class="carrello-bar empty" id="carrello-bar">
+    <div class="cart-info" id="cart-info">Nessun servizio selezionato</div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <div class="cart-total" id="cart-total">0,00 €</div>
+      <button class="btn-vendi" id="btn-vendi" onclick="apriVendita()" disabled>Vendi</button>
+    </div>
+  </div>
+
+  <div class="cat-label">Vendite di oggi</div>
+  <div id="vendite-oggi"></div>
 </div>
 
 <!-- AGENDA -->
 <div id="screen-agenda" class="screen">
-  <div class="cat-label">Prossimi appuntamenti</div>
-  <div id="agenda-futuri"></div>
-  <div style="display:flex;align-items:center;justify-content:space-between;margin:16px 0 10px">
-    <div class="cat-label" style="margin:0">Storico lavori</div>
-    <select class="field-select" id="filtro-agenda" onchange="buildAgenda()" style="width:auto;padding:8px 12px;margin:0;font-size:12px">
-      <option value="tutti">Tutti</option>
-      <option value="da-pagare">Da pagare</option>
-      <option value="pagato">Pagati</option>
-    </select>
+  <div class="week-nav">
+    <button class="week-nav-btn" onclick="cambiaSettimana(-1)">‹</button>
+    <div style="text-align:center">
+      <div style="font-size:13px;font-weight:700;color:var(--text)" id="week-label">Settimana</div>
+      <div style="font-size:10px;color:var(--text3);margin-top:2px" id="week-range"></div>
+    </div>
+    <button class="week-nav-btn" onclick="cambiaSettimana(1)">›</button>
   </div>
-  <button class="btn-add" onclick="apriNuovoAppt()">+ Aggiungi appuntamento</button>
-  <div id="agenda-list"></div>
-</div>
-
-<!-- CLIENTI -->
-<div id="screen-clienti" class="screen">
-  <button class="btn-add" onclick="apriNuovoCliente()">+ Aggiungi cliente</button>
-  <div class="cat-label">I tuoi clienti</div>
-  <div id="clienti-list"></div>
+  <div class="week-days" id="week-days"></div>
+  <button class="btn-add" onclick="apriNuovoAppuntamento()">+ Nuovo appuntamento</button>
+  <div class="agenda-orari" id="agenda-orari"></div>
 </div>
 
 <!-- REPORT -->
 <div id="screen-report" class="screen">
   <div class="period-filter">
-    <button class="period-btn active" onclick="setPeriodo('settimana',this)">Settimana</button>
+    <button class="period-btn active" onclick="setPeriodo('oggi',this)">Oggi</button>
+    <button class="period-btn" onclick="setPeriodo('settimana',this)">Settimana</button>
     <button class="period-btn" onclick="setPeriodo('mese',this)">Mese</button>
     <button class="period-btn" onclick="setPeriodo('anno',this)">Anno</button>
     <button class="period-btn" onclick="setPeriodo('tutto',this)">Totale</button>
   </div>
   <div class="stat-grid">
-    <div class="stat-card"><div class="s-label">Guadagnato</div><div class="s-value blu" id="r-guadagno">—</div></div>
-    <div class="stat-card"><div class="s-label">Ore lavorate</div><div class="s-value" id="r-ore">—</div></div>
-    <div class="stat-card"><div class="s-label">Incassato</div><div class="s-value green" id="r-pagato">—</div></div>
-    <div class="stat-card"><div class="s-label">Da incassare</div><div class="s-value warn" id="r-da-pagare">—</div></div>
+    <div class="stat-card"><div class="s-label">Incasso</div><div class="s-value rosso" id="r-incasso">—</div></div>
+    <div class="stat-card"><div class="s-label">Margine netto</div><div class="s-value green" id="r-margine">—</div></div>
+    <div class="stat-card"><div class="s-label">N° Vendite</div><div class="s-value" id="r-vendite">—</div></div>
+    <div class="stat-card"><div class="s-label">N° Clienti</div><div class="s-value" id="r-clienti">—</div></div>
   </div>
-  <div class="highlight blu"><span class="icon">💰</span><div><div class="h-label">Media oraria</div><div class="h-value" id="r-media-ora">—</div></div></div>
-  <div class="highlight green"><span class="icon">👤</span><div><div class="h-label">Cliente con più ore</div><div class="h-value" id="r-top-cliente">—</div></div></div>
-  <div class="highlight warn"><span class="icon">⏳</span><div><div class="h-label">Totale da riscuotere</div><div class="h-value" id="r-da-riscuotere">—</div></div></div>
-  <div class="cat-label">Dettaglio lavori</div>
-  <div class="report-list" id="report-list"></div>
+  <div class="highlight rosso"><span class="icon">✂</span><div><div class="h-label">Servizio più venduto</div><div class="h-value" id="r-top-servizio">—</div></div></div>
+  <div class="highlight green"><span class="icon">📊</span><div><div class="h-label">Incasso medio a cliente</div><div class="h-value" id="r-media">—</div></div></div>
+  <div class="cat-label">Top servizi</div>
+  <div class="top-servizi" id="top-servizi"></div>
 </div>
 
 <!-- ADMIN -->
 <div id="screen-admin" class="screen">
-  <div style="margin-bottom:10px"><div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:10px">Riepilogo generale</div>
-  <div class="admin-card" id="admin-stats"></div></div>
-  <div><div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:10px">Tariffe standard</div>
-  <div class="admin-card">
-    <div class="admin-row"><div><div class="admin-row-name">Tariffa cliente fisso</div><div class="admin-row-sub">Cliente che viene spesso</div></div><div class="admin-row-val">10 €/ora</div></div>
-    <div class="admin-row"><div><div class="admin-row-name">Tariffa standard</div><div class="admin-row-sub">Altri clienti</div></div><div class="admin-row-val">12 €/ora</div></div>
-  </div></div>
+  <div class="admin-section">
+    <div class="admin-title">Riepilogo attività</div>
+    <div class="admin-card" id="admin-stats"></div>
+  </div>
+  <div class="admin-section">
+    <div class="admin-title">Catalogo servizi</div>
+    <button class="btn-add" onclick="apriNuovoProdotto()">+ Aggiungi servizio</button>
+    <div class="admin-card" id="admin-catalogo"></div>
+  </div>
+  <div class="admin-section">
+    <div class="admin-title">Orari e chiusure</div>
+    <div id="admin-orari"></div>
+    <button class="btn-rosso" onclick="salvaOrari()" style="margin-top:4px">Salva orari</button>
+  </div>
 </div>
 
 <div id="toast"></div>
 
 <script>
+// ---- CONFIG ----
 const SB_URL = 'https://hteopuanhychwuqysckl.supabase.co';
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh0ZW9wdWFuaHljaHd1cXlzY2tsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzMTM2NjUsImV4cCI6MjA5Mzg4OTY2NX0.LEo3tiZWrCOexDaa1sW4-0mOGZe3i00vUrWzzpa_EBc';
-const CID = 5; // Conteggio Ore
-const ADMIN_PIN = '1234';
+const CID = 4; // Cut by Seb
+const ADMIN_PIN = '4752';
 const H = {'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY};
+
+// Slot orari per giorno
+const SLOT_MAR_MER_VEN = ['09:00','09:30','10:00','10:30','11:00','11:30','12:00','12:30','14:30','15:00','15:30','16:00','16:30','17:00','17:30','18:00'];
+const SLOT_GIO         = ['09:00','09:30','10:00','10:30','11:00','11:30','12:00','12:30','14:30','15:00','15:30','16:00','16:30','17:00','17:30','18:00','18:30','19:00','19:30'];
+const SLOT_SAB         = ['09:00','09:30','10:00','10:30','11:00','11:30','12:00','12:30','13:00','13:30'];
+
+function getSlot(ds) {
+  const dow = new Date(ds+'T12:00:00').getDay();
+  if (dow===4) return SLOT_GIO;
+  if (dow===6) return SLOT_SAB;
+  return SLOT_MAR_MER_VEN;
+}
+
+const GIORNI_NOMI = ['Dom','Lun','Mar','Mer','Gio','Ven','Sab'];
+const MESI = ['gen','feb','mar','apr','mag','giu','lug','ago','set','ott','nov','dic'];
 
 async function sbGet(t,p){const r=await fetch(SB_URL+'/rest/v1/'+t+'?'+(p||''),{headers:{...H,'Prefer':'return=representation'}});return await r.json();}
 async function sbInsert(t,d){const r=await fetch(SB_URL+'/rest/v1/'+t,{method:'POST',headers:{...H,'Prefer':'return=representation'},body:JSON.stringify(d)});return await r.json();}
 async function sbUpdate(t,id,d){const r=await fetch(SB_URL+'/rest/v1/'+t+'?id=eq.'+id,{method:'PATCH',headers:{...H,'Prefer':'return=representation'},body:JSON.stringify(d)});return await r.json();}
 async function sbDelete(t,id){await fetch(SB_URL+'/rest/v1/'+t+'?id=eq.'+id,{method:'DELETE',headers:H});}
 
-const MESI=['gen','feb','mar','apr','mag','giu','lug','ago','set','ott','nov','dic'];
-const GIORNI=['Dom','Lun','Mar','Mer','Gio','Ven','Sab'];
-
-let clienti=[], appuntamenti=[];
-let apptEditId=null, clienteEditId=null, tariffaSelezionata=12;
+let prodotti=[], vendite=[], appuntamenti=[], chiusureStd=[0,1];
+let carrello=[], agendaOffset=0, agendaData=oggiStr(), apptEditId=null, prodEditId=null;
 let periodoRep='mese', adminSbloccato=false, pinBuffer='';
 
 function oggiStr(){return new Date().toISOString().split('T')[0];}
 function fmt(n){return parseFloat(n||0).toFixed(2).replace('.',',')+' €';}
-function fmtOre(n){const h=Math.floor(n);const m=(n-h)*60;return h+'h'+(m>0?' '+m+'min':'');}
-function fmtData(ds){const d=new Date(ds+'T12:00:00');return GIORNI[d.getDay()]+' '+d.getDate()+' '+MESI[d.getMonth()];}
+function fmtData(ds){const d=new Date(ds+'T12:00:00');return GIORNI_NOMI[d.getDay()]+' '+d.getDate()+' '+MESI[d.getMonth()];}
 
 let toastT;
 function showToast(msg,t){const el=document.getElementById('toast');el.textContent=msg;el.className=t?'show '+t:'show';clearTimeout(toastT);toastT=setTimeout(()=>el.className='',2400);}
@@ -420,24 +473,22 @@ function showScreen(name){
   document.getElementById('tab-'+name).classList.add('active');
   if(name==='oggi') buildOggi();
   if(name==='agenda') buildAgenda();
-  if(name==='clienti') buildClienti();
   if(name==='report') buildReport();
   if(name==='admin') buildAdmin();
 }
 
+// ---- INIT ----
 async function init(){
   const d=new Date();
   document.getElementById('today-label').textContent=d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear();
-  document.getElementById('appt-data').value=oggiStr();
   try {
-    // Usiamo la tabella corse per gli appuntamenti (stesso schema adattato) oppure appuntamenti
-    // Usiamo appuntamenti con campo extra per le ore
-    [appuntamenti] = await Promise.all([
-      sbGet('appuntamenti','commerciante_id=eq.'+CID+'&order=data.desc,ora_inizio.desc'),
+    [prodotti, vendite, appuntamenti] = await Promise.all([
+      sbGet('catalogo','commerciante_id=eq.'+CID+'&order=categoria.asc,nome.asc'),
+      sbGet('vendite','commerciante_id=eq.'+CID+'&order=created_at.desc'),
+      sbGet('appuntamenti','commerciante_id=eq.'+CID+'&order=data.asc,ora_inizio.asc'),
     ]);
-    // Clienti li prendiamo dal catalogo (usiamo nome come cliente, prezzo come tariffa)
-    const cat = await sbGet('catalogo','commerciante_id=eq.'+CID+'&order=nome.asc');
-    clienti = cat; // ogni voce catalogo = un cliente
+    const cs = await sbGet('chiusure_standard','commerciante_id=eq.'+CID);
+    if(cs&&cs.length) chiusureStd=cs.map(c=>c.giorno_settimana);
     buildOggi();
     document.getElementById('loading').style.display='none';
   } catch(e) {
@@ -448,329 +499,279 @@ async function init(){
 // ---- OGGI ----
 function buildOggi(){
   const oggi=oggiStr();
+  const vOggi=vendite.filter(v=>v.data===oggi);
   const aOggi=appuntamenti.filter(a=>a.data===oggi);
-  const guadagno=aOggi.reduce((s,a)=>s+parseFloat(a.prezzo||0),0);
-  const ore=aOggi.reduce((s,a)=>s+parseFloat(a.durata||1),0);
-  const pagato=aOggi.filter(a=>a.stato==='pagato').reduce((s,a)=>s+parseFloat(a.prezzo||0),0);
-  const daPagare=aOggi.filter(a=>a.stato==='da-pagare').reduce((s,a)=>s+parseFloat(a.prezzo||0),0);
+  const incasso=vOggi.reduce((s,v)=>s+parseFloat(v.totale||0),0);
+  const costo=vOggi.reduce((s,v)=>s+parseFloat(v.costo_totale||0),0);
+  const nClienti=new Set(vOggi.map(v=>v.cliente||'anonimo')).size;
+  const nServizi=vOggi.reduce((s,v)=>s+(v.servizi?JSON.parse(v.servizi).length:1),0);
 
-  document.getElementById('oggi-guadagno').textContent=fmt(guadagno);
-  document.getElementById('oggi-ore').textContent=fmtOre(ore);
-  document.getElementById('oggi-clienti').textContent=aOggi.length;
-  document.getElementById('oggi-pagato').textContent=fmt(pagato).replace(' €','€');
-  document.getElementById('oggi-da-pagare').textContent=fmt(daPagare).replace(' €','€');
+  document.getElementById('oggi-incasso').textContent=fmt(incasso);
+  document.getElementById('oggi-margine').textContent=fmt(incasso-costo);
+  document.getElementById('oggi-clienti').textContent=nClienti;
+  document.getElementById('oggi-servizi').textContent=nServizi;
+  document.getElementById('oggi-appuntamenti').textContent=aOggi.filter(a=>a.stato!=='annullato').length;
 
-  if(!aOggi.length){
-    document.getElementById('oggi-list').innerHTML='<div class="empty-state"><div class="empty-icon">🧹</div>Nessun lavoro registrato oggi</div>';
+  buildServiziGrid();
+
+  if(!vOggi.length){
+    document.getElementById('vendite-oggi').innerHTML='<div class="empty-state"><div class="empty-icon">✂</div>Nessuna vendita oggi</div>';
     return;
   }
-  document.getElementById('oggi-list').innerHTML=aOggi.map(a=>buildApptCard(a)).join('');
+  document.getElementById('vendite-oggi').innerHTML=vOggi.map(v=>{
+    let servizi=[];try{servizi=JSON.parse(v.servizi);}catch(e){servizi=[{nome:v.servizio||'Servizio',prezzo:v.totale}];}
+    return '<div class="vendita-item"><div class="vendita-info"><div class="v-servizi">'+servizi.map(s=>s.nome).join(', ')+'</div><div class="v-ora">'+v.ora+(v.cliente?' · '+v.cliente:'')+(v.pagamento?' · '+v.pagamento:'')+'</div><div class="v-prezzo">'+fmt(v.totale)+'</div></div><div class="vendita-totale">'+fmt(v.totale)+'</div></div>';
+  }).join('');
 }
 
-function buildApptCard(a){
-  const ore=parseFloat(a.durata||1);
-  const isFuturo=a.data>oggiStr();
-  return '<div class="appt-card '+(isFuturo?'futuro':a.stato)+'" onclick="apriModificaAppt('+a.id+')">'
-    +'<div class="appt-header"><div class="appt-cliente">'+a.cliente+'</div>'
-    +(isFuturo?'<span class="prossimo-badge">Programmato</span>':'<span class="appt-stato '+a.stato+'">'+(a.stato==='pagato'?'Pagato':'Da pagare')+'</span>')
-    +'</div>'
-    +'<div class="appt-dettagli">'
-    +'<div class="appt-det">📅 <strong>'+fmtData(a.data)+'</strong></div>'
-    +(a.ora_inizio?'<div class="appt-det">🕐 <strong>'+a.ora_inizio+'</strong></div>':'')
-    +(!isFuturo?'<div class="appt-det">⏱ <strong>'+fmtOre(ore)+'</strong></div>':'')
-    +(a.note?'<div class="appt-det">📝 '+a.note+'</div>':'')
-    +'</div>'
-    +(a.servizio&&a.servizio.includes('luogo:')?'<div class="appt-luogo">📍 '+a.servizio.replace('luogo:','').trim()+'</div>':'')
-    +(a.note2?'<div class="appt-luogo">📍 '+a.note2+'</div>':'')
-    +'<div class="appt-footer"><div class="appt-importo">'+(isFuturo?'~'+fmt(ore*(a.prezzo/ore||0)):fmt(a.prezzo))+'</div>'
-    +'<div style="display:flex;gap:6px">'
-    +(!isFuturo&&a.stato==='da-pagare'?'<button class="btn-paga" onclick="event.stopPropagation();segnapagatoId('+a.id+')">✓ Pagato</button>':'')
-    +'<button class="btn-edit-a" onclick="event.stopPropagation();apriModificaAppt('+a.id+')">✏️</button>'
-    +'</div></div>'
-  +'</div>';
+function buildServiziGrid(){
+  const categorie=[...new Set(prodotti.map(p=>p.categoria))];
+  let html='';
+  prodotti.forEach((p,i)=>{
+    const qty=carrello.filter(c=>c.id===p.id).length;
+    html+='<button class="service-btn'+(qty>0?' tapped':'')+'" onclick="addCarrello('+i+')">'
+      +'<div class="s-cat">'+p.categoria+'</div>'
+      +'<div class="s-nome">'+p.nome+'</div>'
+      +'<div class="s-prezzo">'+fmt(p.prezzo)+'</div>'
+      +'<span class="badge'+(qty>0?' show':'')+'">'+qty+'</span>'
+    +'</button>';
+  });
+  document.getElementById('servizi-grid').innerHTML=html||'<div class="empty-state" style="grid-column:1/-1">Nessun servizio nel catalogo</div>';
+  aggiornaCarrello();
+}
+
+function addCarrello(idx){
+  carrello.push({...prodotti[idx]});
+  buildServiziGrid();
+}
+
+function aggiornaCarrello(){
+  const tot=carrello.reduce((s,c)=>s+parseFloat(c.prezzo||0),0);
+  const n=carrello.length;
+  const bar=document.getElementById('carrello-bar');
+  const btn=document.getElementById('btn-vendi');
+  if(n===0){
+    document.getElementById('cart-info').textContent='Nessun servizio selezionato';
+    document.getElementById('cart-total').textContent='0,00 €';
+    bar.classList.add('empty');btn.disabled=true;
+  } else {
+    document.getElementById('cart-info').textContent=n+' servizio'+(n>1?'i':'')+' selezionat'+(n>1?'i':'o');
+    document.getElementById('cart-total').textContent=fmt(tot);
+    bar.classList.remove('empty');btn.disabled=false;
+  }
+}
+
+function apriVendita(){
+  if(!carrello.length)return;
+  const tot=carrello.reduce((s,c)=>s+parseFloat(c.prezzo||0),0);
+  document.getElementById('vendita-riepilogo').textContent=carrello.map(c=>c.nome).join(', ')+' — '+fmt(tot);
+  document.getElementById('v-cliente').value='';
+  apriOverlay('cliente-overlay');
+}
+
+async function confermaVendita(){
+  const tot=carrello.reduce((s,c)=>s+parseFloat(c.prezzo||0),0);
+  const costo=carrello.reduce((s,c)=>s+parseFloat(c.costo||0),0);
+  const ora=new Date().toTimeString().slice(0,5);
+  const dati={
+    commerciante_id:CID,
+    data:oggiStr(),ora,
+    cliente:document.getElementById('v-cliente').value.trim()||'',
+    pagamento:document.getElementById('v-pagamento').value,
+    servizi:JSON.stringify(carrello.map(c=>({nome:c.nome,prezzo:c.prezzo}))),
+    totale:tot,costo_totale:costo,
+    servizio:carrello.map(c=>c.nome).join(', ')
+  };
+  const nuova=await sbInsert('vendite',dati);
+  if(nuova&&nuova[0])vendite.unshift(nuova[0]);
+  carrello=[];
+  chiudiOverlay('cliente-overlay');
+  buildOggi();
+  showToast('✓ Vendita registrata — '+fmt(tot));
 }
 
 // ---- AGENDA ----
-function buildAgenda(){
-  const oggi=oggiStr();
+function getLunedi(offset){const d=new Date(),dow=d.getDay();d.setDate(d.getDate()+(dow===0?-6:1-dow)+offset*7);d.setHours(0,0,0,0);return d;}
+function cambiaSettimana(dir){agendaOffset+=dir;buildAgenda();}
 
-  // Prossimi appuntamenti (futuri)
-  const futuri=appuntamenti.filter(a=>a.data>oggi).sort((a,b)=>a.data.localeCompare(b.data)||a.ora_inizio.localeCompare(b.ora_inizio));
-  if(!futuri.length){
-    document.getElementById('agenda-futuri').innerHTML='<div class="empty-state" style="padding:16px"><div class="empty-icon" style="font-size:24px">📅</div>Nessun appuntamento programmato</div>';
-  } else {
-    document.getElementById('agenda-futuri').innerHTML=futuri.map(a=>buildApptCard(a)).join('');
+function buildAgenda(){
+  const lun=getLunedi(agendaOffset);
+  const dom=new Date(lun);dom.setDate(dom.getDate()+6);
+  const oggi=oggiStr();
+  document.getElementById('week-label').textContent='Settimana '+(agendaOffset===0?'corrente':agendaOffset>0?'+'+agendaOffset:agendaOffset);
+  document.getElementById('week-range').textContent=lun.getDate()+' '+MESI[lun.getMonth()]+' – '+dom.getDate()+' '+MESI[dom.getMonth()];
+
+  let daysHtml='';
+  for(let i=0;i<7;i++){
+    const d=new Date(lun);d.setDate(d.getDate()+i);
+    const ds=d.toISOString().split('T')[0];
+    const dow=d.getDay();
+    const isChiuso=chiusureStd.includes(dow);
+    const isOggi=ds===oggi;
+    const isActive=ds===agendaData;
+    const nAppt=appuntamenti.filter(a=>a.data===ds&&a.stato!=='annullato').length;
+    daysHtml+='<div class="week-day'+(isActive?' active':'')+(isOggi&&!isActive?' today':'')+(isChiuso?' chiuso':'')+'" onclick="selezionaGiorno(\''+ds+'\')">'+
+      '<div class="wd-giorno">'+GIORNI_NOMI[dow]+'</div>'+
+      '<div class="wd-num">'+d.getDate()+'</div>'+
+      (nAppt>0?'<div class="wd-dot"></div>':'<div style="height:8px"></div>')+
+    '</div>';
+  }
+  document.getElementById('week-days').innerHTML=daysHtml;
+  buildOrari();
+}
+
+function selezionaGiorno(ds){agendaData=ds;buildAgenda();}
+
+function buildOrari(){
+  const ds=agendaData;
+  const dow=new Date(ds+'T12:00:00').getDay();
+  const isChiuso=chiusureStd.includes(dow);
+
+  if(isChiuso){
+    document.getElementById('agenda-orari').innerHTML='<div class="chiuso-banner">✂ Chiuso — '+fmtData(ds)+'<br><small style="font-size:11px;margin-top:6px;display:block">Giorno di riposo</small></div>';
+    return;
   }
 
-  // Storico
-  const filtro=document.getElementById('filtro-agenda').value;
-  let filt=appuntamenti.filter(a=>a.data<=oggi);
-  if(filtro==='da-pagare') filt=filt.filter(a=>a.stato==='da-pagare');
-  if(filtro==='pagato') filt=filt.filter(a=>a.stato==='pagato');
+  const slots=getSlot(ds);
+  const appts=appuntamenti.filter(a=>a.data===ds&&a.stato!=='annullato');
+  const occupato={};
+  appts.forEach(a=>{
+    const si=slots.indexOf(a.ora_inizio);
+    const n=Math.ceil((a.durata||30)/30);
+    for(let i=0;i<n;i++){if(si+i<slots.length)occupato[slots[si+i]]={appt:a,isFirst:i===0,n};}
+  });
 
-  if(!filt.length){document.getElementById('agenda-list').innerHTML='<div class="empty-state"><div class="empty-icon">🧹</div>Nessun lavoro trovato</div>';return;}
+  const mattina=slots.filter(s=>s<'13:00');
+  const pome=slots.filter(s=>s>='13:00');
+  const colori=['color-1','color-2','color-3'];
+  const apptColori={};
+  let colIdx=0;
 
-  const perData={};
-  filt.forEach(a=>{if(!perData[a.data])perData[a.data]=[];perData[a.data].push(a);});
-  const date=Object.keys(perData).sort((a,b)=>b.localeCompare(a));
+  let html='';
+  function buildRow(ora){
+    const occ=occupato[ora];
+    if(occ&&!occ.isFirst) return '';
+    if(!apptColori[occ?.appt?.id]&&occ){apptColori[occ.appt.id]=colori[colIdx%3];colIdx++;}
+    const colore=occ?apptColori[occ.appt.id]:'';
+    return '<div class="time-block"><div class="time-label">'+ora+'</div><div class="slot-area" onclick="'+(occ?'apriModificaAppt('+occ.appt.id+')':'apriNuovoApptOra(\''+ds+'\',\''+ora+'\')')+'">'+
+      (occ&&occ.isFirst?'<div class="appt-block '+colore+'"><div class="appt-nome">'+occ.appt.cliente+'</div><div class="appt-servizio">'+occ.appt.servizio+'</div><div class="appt-prezzo">'+fmt(occ.appt.prezzo)+'</div></div>':(!occ?'<span class="slot-vuoto">+ Prenota</span>':''))
+    +'</div></div>';
+  }
 
-  document.getElementById('agenda-list').innerHTML=date.map(ds=>{
-    const appts=perData[ds];
-    const tot=appts.reduce((s,a)=>s+parseFloat(a.prezzo||0),0);
-    return '<div class="cat-label">'+fmtData(ds)+'<span style="margin-left:auto;font-size:11px;color:var(--text3);font-weight:400">'+fmt(tot)+'</span></div>'
-      +appts.map(a=>buildApptCard(a)).join('');
-  }).join('');
+  mattina.forEach(ora=>{html+=buildRow(ora);});
+  if(pome.length){
+    html+='<div class="time-block pausa"><div class="time-label" style="font-size:10px;font-style:italic">pausa</div><div class="slot-area" style="cursor:default"><span style="font-size:11px;color:var(--border2);font-style:italic">Pausa pranzo</span></div></div>';
+  }
+  pome.forEach(ora=>{html+=buildRow(ora);});
+  document.getElementById('agenda-orari').innerHTML=html;
 }
 
-// ---- CLIENTI ----
-function buildClienti(){
-  if(!clienti.length){document.getElementById('clienti-list').innerHTML='<div class="empty-state"><div class="empty-icon">👤</div>Nessun cliente. Aggiungine uno!</div>';return;}
-  document.getElementById('clienti-list').innerHTML=clienti.map(c=>{
-    const apptCliente=appuntamenti.filter(a=>a.cliente===c.nome);
-    const totOre=apptCliente.reduce((s,a)=>s+parseFloat(a.durata||1),0);
-    const daPagare=apptCliente.filter(a=>a.stato==='da-pagare').reduce((s,a)=>s+parseFloat(a.prezzo||0),0);
-    return '<div class="cliente-card" onclick="apriModificaCliente('+c.id+')">'
-      +'<div style="display:flex;align-items:flex-start;justify-content:space-between">'
-      +'<div class="cliente-nome">'+c.nome+'</div>'
-      +(daPagare>0?'<span class="da-pagare-badge">'+fmt(daPagare)+'</span>':'')
-      +'</div>'
-      +'<div class="cliente-tariffa">'+c.prezzo+' €/ora</div>'
-      +'<div class="cliente-stats">'
-      +'<div class="cliente-stat">Lavori: <strong>'+apptCliente.length+'</strong></div>'
-      +'<div class="cliente-stat">Ore totali: <strong>'+fmtOre(totOre)+'</strong></div>'
-      +(c.note?'<div class="cliente-stat">'+c.note+'</div>':'')
-      +'</div>'
-    +'</div>';
-  }).join('');
-}
-
-// ---- NUOVO APPUNTAMENTO ----
-function apriNuovoAppt(){
+function apriNuovoAppuntamento(){
   apptEditId=null;
-  document.getElementById('appt-title').textContent='Nuovo lavoro';
-  document.getElementById('appt-sub').textContent='Registra ore di lavoro';
-  document.getElementById('appt-data').value=oggiStr();
-  document.getElementById('appt-ora').value='';
-  document.getElementById('appt-ore').value='1';
-  document.getElementById('appt-stato').value='da-pagare';
+  document.getElementById('appt-title').textContent='Nuovo appuntamento';
+  document.getElementById('appt-sub').textContent='Aggiungi un appuntamento per '+fmtData(agendaData);
+  document.getElementById('appt-cliente').value='';
+  document.getElementById('appt-data').value=agendaData;
+  document.getElementById('appt-telefono').value='';
   document.getElementById('appt-note').value='';
-  document.getElementById('appt-luogo').value='';
   document.getElementById('btn-elimina-appt').style.display='none';
-  document.getElementById('btn-segna-pagato').style.display='none';
-  popolaSelectClienti();
-  aggiornaTariffa();
+  popolaServizi(); popolaOre(agendaData);
   apriOverlay('appt-overlay');
+}
+
+function apriNuovoApptOra(ds,ora){
+  apriNuovoAppuntamento();
+  document.getElementById('appt-data').value=ds;
+  popolaOre(ds);
+  setTimeout(()=>document.getElementById('appt-ora').value=ora,50);
 }
 
 function apriModificaAppt(id){
   const a=appuntamenti.find(x=>x.id===id);if(!a)return;
   apptEditId=id;
-  document.getElementById('appt-title').textContent='Modifica lavoro';
+  document.getElementById('appt-title').textContent='Modifica appuntamento';
   document.getElementById('appt-sub').textContent=a.cliente+' · '+fmtData(a.data);
+  document.getElementById('appt-cliente').value=a.cliente||'';
   document.getElementById('appt-data').value=a.data;
-  document.getElementById('appt-ora').value=a.ora_inizio||'';
-  document.getElementById('appt-ore').value=a.durata||1;
-  document.getElementById('appt-stato').value=a.stato||'da-pagare';
+  document.getElementById('appt-telefono').value=a.telefono||'';
   document.getElementById('appt-note').value=a.note||'';
-  document.getElementById('appt-luogo').value=a.note2||'';
   document.getElementById('btn-elimina-appt').style.display='block';
-  document.getElementById('btn-segna-pagato').style.display=a.stato==='da-pagare'?'block':'none';
-  popolaSelectClienti(a.cliente);
-  aggiornaTariffa();
+  popolaServizi(a.servizio); popolaOre(a.data, a.ora_inizio);
   apriOverlay('appt-overlay');
 }
 
-function popolaSelectClienti(sel){
-  const opt=clienti.map(c=>'<option value="'+c.nome+'" data-tariffa="'+c.prezzo+'"'+(c.nome===sel?' selected':'')+'>'+c.nome+' ('+c.prezzo+'€/h)</option>').join('');
-  document.getElementById('appt-cliente').innerHTML='<option value="">Seleziona cliente...</option>'+opt;
-  aggiornaTariffa();
+function popolaServizi(sel){
+  document.getElementById('appt-servizio').innerHTML=prodotti.map(p=>'<option value="'+p.nome+'" data-prezzo="'+p.prezzo+'"'+(p.nome===sel?' selected':'')+'>'+p.nome+'</option>').join('');
 }
 
-function aggiornaTariffa(){
-  const sel=document.getElementById('appt-cliente');
-  const opt=sel.options[sel.selectedIndex];
-  const tariffa=parseFloat(opt?.dataset?.tariffa)||12;
-  const ore=parseFloat(document.getElementById('appt-ore').value)||1;
-  const importo=tariffa*ore;
-  document.getElementById('tariffa-info').textContent=tariffa+' €/ora × '+fmtOre(ore);
-  document.getElementById('importo-preview').textContent=fmt(importo);
+function popolaOre(ds,sel){
+  const slots=getSlot(ds||agendaData);
+  document.getElementById('appt-ora').innerHTML=slots.map(o=>'<option value="'+o+'"'+(o===sel?' selected':'')+'>'+o+'</option>').join('');
 }
 
 async function salvaAppuntamento(){
-  const clienteSel=document.getElementById('appt-cliente');
-  const clienteNome=clienteSel.value;
+  const cliente=document.getElementById('appt-cliente').value.trim();
   const data=document.getElementById('appt-data').value;
-  const ore=parseFloat(document.getElementById('appt-ore').value)||1;
-  const tariffa=parseFloat(clienteSel.options[clienteSel.selectedIndex]?.dataset?.tariffa)||12;
-  if(!clienteNome){showToast('Seleziona un cliente','err');return;}
-  if(!data){showToast('Inserisci la data','err');return;}
-  const importo=tariffa*ore;
-  const dati={
-    commerciante_id:CID,
-    cliente:clienteNome,
-    data,
-    ora_inizio:document.getElementById('appt-ora').value||'',
-    durata:ore,
-    prezzo:importo,
-    stato:document.getElementById('appt-stato').value,
-    servizio:fmtOre(ore)+' di pulizie',
-    note:document.getElementById('appt-note').value.trim(),
-    note2:document.getElementById('appt-luogo').value.trim()
-  };
-  if(apptEditId){
-    await sbUpdate('appuntamenti',apptEditId,dati);
-    const i=appuntamenti.findIndex(x=>x.id===apptEditId);
-    if(i!==-1)appuntamenti[i]={...appuntamenti[i],...dati};
-  } else {
-    const n=await sbInsert('appuntamenti',dati);
-    if(n&&n[0])appuntamenti.unshift(n[0]);
-  }
-  chiudiOverlay('appt-overlay');
-  buildOggi();buildAgenda();
-  showToast('✓ Lavoro salvato — '+fmt(importo));
-}
-
-async function segnapagatoId(id){
-  await sbUpdate('appuntamenti',id,{stato:'pagato'});
-  const i=appuntamenti.findIndex(x=>x.id===id);
-  if(i!==-1)appuntamenti[i].stato='pagato';
-  buildOggi();buildAgenda();
-  showToast('✓ Segnato come pagato');
-}
-
-async function segnaPagato(){
-  if(!apptEditId)return;
-  await sbUpdate('appuntamenti',apptEditId,{stato:'pagato'});
-  const i=appuntamenti.findIndex(x=>x.id===apptEditId);
-  if(i!==-1)appuntamenti[i].stato='pagato';
-  chiudiOverlay('appt-overlay');
-  buildOggi();buildAgenda();
-  showToast('✓ Segnato come pagato');
+  const ora=document.getElementById('appt-ora').value;
+  const servSelect=document.getElementById('appt-servizio');
+  const servizio=servSelect.value;
+  const prezzo=servSelect.options[servSelect.selectedIndex]?.dataset?.prezzo||0;
+  if(!cliente||!data||!ora){showToast('Compila nome, data e ora','err');return;}
+  const dati={commerciante_id:CID,cliente,data,ora_inizio:ora,servizio,prezzo:parseFloat(prezzo),durata:30,stato:'prenotato',telefono:document.getElementById('appt-telefono').value.trim(),note:document.getElementById('appt-note').value.trim()};
+  if(apptEditId){await sbUpdate('appuntamenti',apptEditId,dati);const i=appuntamenti.findIndex(x=>x.id===apptEditId);if(i!==-1)appuntamenti[i]={...appuntamenti[i],...dati};}
+  else{const n=await sbInsert('appuntamenti',dati);if(n&&n[0])appuntamenti.push(n[0]);}
+  chiudiOverlay('appt-overlay');buildAgenda();showToast('✓ Appuntamento salvato');
 }
 
 async function eliminaAppuntamento(){
-  if(!confirm('Eliminare questo lavoro?'))return;
+  if(!confirm('Eliminare questo appuntamento?'))return;
   await sbDelete('appuntamenti',apptEditId);
   appuntamenti=appuntamenti.filter(x=>x.id!==apptEditId);
-  chiudiOverlay('appt-overlay');
-  buildOggi();buildAgenda();
-  showToast('Lavoro eliminato','err');
-}
-
-// ---- CLIENTI ----
-function apriNuovoCliente(){
-  clienteEditId=null;
-  document.getElementById('cliente-title').textContent='Nuovo cliente';
-  document.getElementById('c-nome').value='';
-  document.getElementById('c-telefono').value='';
-  document.getElementById('c-indirizzo').value='';
-  document.getElementById('c-note').value='';
-  document.getElementById('btn-elimina-cliente').style.display='none';
-  setTariffa(12);
-  apriOverlay('cliente-overlay');
-}
-
-function apriModificaCliente(id){
-  const c=clienti.find(x=>x.id===id);if(!c)return;
-  clienteEditId=id;
-  document.getElementById('cliente-title').textContent='Modifica cliente';
-  document.getElementById('c-nome').value=c.nome||'';
-  document.getElementById('c-telefono').value=c.categoria||'';
-  document.getElementById('c-indirizzo').value=c.costo||'';
-  document.getElementById('c-note').value=c.note||'';
-  document.getElementById('btn-elimina-cliente').style.display='block';
-  setTariffa(parseFloat(c.prezzo)||12);
-  apriOverlay('cliente-overlay');
-}
-
-function setTariffa(v){
-  tariffaSelezionata=v;
-  document.getElementById('c-tariffa').value=v;
-  document.getElementById('btn-tariffa-10').style.borderColor=v===10?'var(--blu)':'var(--border)';
-  document.getElementById('btn-tariffa-10').style.color=v===10?'var(--blu-light)':'var(--text2)';
-  document.getElementById('btn-tariffa-12').style.borderColor=v===12?'var(--blu)':'var(--border)';
-  document.getElementById('btn-tariffa-12').style.color=v===12?'var(--blu-light)':'var(--text2)';
-}
-
-async function salvaCliente(){
-  const nome=document.getElementById('c-nome').value.trim();
-  const tariffa=parseFloat(document.getElementById('c-tariffa').value)||12;
-  if(!nome){showToast('Inserisci il nome del cliente','err');return;}
-  const dati={
-    commerciante_id:CID,
-    nome,
-    prezzo:tariffa,
-    categoria:document.getElementById('c-telefono').value.trim(), // usiamo categoria per telefono
-    costo:document.getElementById('c-indirizzo').value.trim(),    // usiamo costo per indirizzo
-    note:document.getElementById('c-note').value.trim()
-  };
-  if(clienteEditId){
-    await sbUpdate('catalogo',clienteEditId,dati);
-    const i=clienti.findIndex(x=>x.id===clienteEditId);
-    if(i!==-1)clienti[i]={...clienti[i],...dati};
-  } else {
-    const n=await sbInsert('catalogo',dati);
-    if(n&&n[0])clienti.push(n[0]);
-  }
-  chiudiOverlay('cliente-overlay');
-  buildClienti();
-  showToast('✓ Cliente salvato');
-}
-
-async function eliminaCliente(){
-  if(!confirm('Eliminare questo cliente?'))return;
-  await sbDelete('catalogo',clienteEditId);
-  clienti=clienti.filter(x=>x.id!==clienteEditId);
-  chiudiOverlay('cliente-overlay');
-  buildClienti();
-  showToast('Cliente eliminato','err');
+  chiudiOverlay('appt-overlay');buildAgenda();showToast('Appuntamento eliminato','err');
 }
 
 // ---- REPORT ----
 function setPeriodo(p,btn){periodoRep=p;document.querySelectorAll('.period-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');buildReport();}
 
-function filtraAppt(){
+function filtraVendite(){
   const ora=new Date(),oggi=new Date(ora.getFullYear(),ora.getMonth(),ora.getDate());
-  return appuntamenti.filter(a=>{
-    const d=new Date(a.data+'T12:00:00');
+  return vendite.filter(v=>{
+    const d=new Date(v.data+'T12:00:00');
+    if(periodoRep==='oggi')return d>=oggi;
     if(periodoRep==='settimana'){const i=new Date(oggi);i.setDate(oggi.getDate()-(oggi.getDay()===0?6:oggi.getDay()-1));return d>=i;}
     if(periodoRep==='mese')return d.getMonth()===ora.getMonth()&&d.getFullYear()===ora.getFullYear();
     if(periodoRep==='anno')return d.getFullYear()===ora.getFullYear();
     return true;
-  }).filter(a=>a.stato!=='annullato');
+  });
 }
 
 function buildReport(){
-  const filt=filtraAppt();
+  const filt=filtraVendite();
   if(!filt.length){
-    ['r-guadagno','r-ore','r-pagato','r-da-pagare','r-media-ora','r-top-cliente','r-da-riscuotere'].forEach(id=>document.getElementById(id).textContent='—');
-    document.getElementById('report-list').innerHTML='<div class="empty-state">Nessun lavoro nel periodo</div>';
+    ['r-incasso','r-margine','r-vendite','r-clienti','r-top-servizio','r-media'].forEach(id=>document.getElementById(id).textContent='—');
+    document.getElementById('top-servizi').innerHTML='<div class="empty-state">Nessuna vendita nel periodo</div>';
     return;
   }
-  const totGuadagno=filt.reduce((s,a)=>s+parseFloat(a.prezzo||0),0);
-  const totOre=filt.reduce((s,a)=>s+parseFloat(a.durata||1),0);
-  const totPagato=filt.filter(a=>a.stato==='pagato').reduce((s,a)=>s+parseFloat(a.prezzo||0),0);
-  const totDaPagare=filt.filter(a=>a.stato==='da-pagare').reduce((s,a)=>s+parseFloat(a.prezzo||0),0);
+  const totI=filt.reduce((s,v)=>s+parseFloat(v.totale||0),0);
+  const totC=filt.reduce((s,v)=>s+parseFloat(v.costo_totale||0),0);
+  const nClienti=new Set(filt.map(v=>v.cliente||'anonimo')).size;
+  const serviziCount={};
+  const serviziTot={};
+  filt.forEach(v=>{
+    let servs=[];try{servs=JSON.parse(v.servizi);}catch(e){servs=[{nome:v.servizio||'Servizio',prezzo:v.totale}];}
+    servs.forEach(s=>{serviziCount[s.nome]=(serviziCount[s.nome]||0)+1;serviziTot[s.nome]=(serviziTot[s.nome]||0)+parseFloat(s.prezzo||0);});
+  });
+  const topNome=Object.entries(serviziCount).sort((a,b)=>b[1]-a[1])[0];
 
-  // Top cliente per ore
-  const orePerCliente={};
-  filt.forEach(a=>{orePerCliente[a.cliente]=(orePerCliente[a.cliente]||0)+parseFloat(a.durata||1);});
-  const topCliente=Object.entries(orePerCliente).sort((a,b)=>b[1]-a[1])[0];
+  document.getElementById('r-incasso').textContent=fmt(totI);
+  document.getElementById('r-margine').textContent=fmt(totI-totC);
+  document.getElementById('r-vendite').textContent=filt.length;
+  document.getElementById('r-clienti').textContent=nClienti;
+  document.getElementById('r-top-servizio').textContent=topNome?topNome[0]+' ('+topNome[1]+'x)':'—';
+  document.getElementById('r-media').textContent=fmt(totI/nClienti);
 
-  // Da riscuotere totale (tutti i periodi)
-  const daRiscuotere=appuntamenti.filter(a=>a.stato==='da-pagare').reduce((s,a)=>s+parseFloat(a.prezzo||0),0);
-
-  document.getElementById('r-guadagno').textContent=fmt(totGuadagno);
-  document.getElementById('r-ore').textContent=fmtOre(totOre);
-  document.getElementById('r-pagato').textContent=fmt(totPagato);
-  document.getElementById('r-da-pagare').textContent=fmt(totDaPagare);
-  document.getElementById('r-media-ora').textContent=totOre>0?fmt(totGuadagno/totOre)+'/ora':'—';
-  document.getElementById('r-top-cliente').textContent=topCliente?topCliente[0]+' ('+fmtOre(topCliente[1])+')':'—';
-  document.getElementById('r-da-riscuotere').textContent=fmt(daRiscuotere)+' totale ancora da incassare';
-
-  document.getElementById('report-list').innerHTML=filt.map(a=>
-    '<div class="report-row"><div><div class="r-data">'+fmtData(a.data)+(a.ora_inizio?' · '+a.ora_inizio:'')+'</div><div class="r-cliente">'+a.cliente+'</div><div class="r-ore">'+fmtOre(parseFloat(a.durata||1))+(a.note?' · '+a.note:'')+'</div></div><div><div class="r-importo">'+fmt(a.prezzo)+'</div><div class="r-stato '+a.stato+'">'+(a.stato==='pagato'?'✓ Pagato':'⏳ Da pagare')+'</div></div></div>'
-  ).join('');
+  const sorted=Object.entries(serviziCount).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  document.getElementById('top-servizi').innerHTML=sorted.map(([nome,qty])=>'<div class="top-row"><div><div class="top-nome">'+nome+'</div></div><div class="top-qty">'+qty+'x</div><div class="top-tot">'+fmt(serviziTot[nome])+'</div></div>').join('')||'<div class="empty-state">Nessun dato</div>';
 }
 
 // ---- ADMIN ----
@@ -780,15 +781,84 @@ function pinDel(){pinBuffer=pinBuffer.slice(0,-1);aggiornaPin();}
 function aggiornaPin(){for(let i=0;i<4;i++)document.getElementById('d'+i).classList.toggle('filled',i<pinBuffer.length);}
 
 function buildAdmin(){
-  const totGuadagno=appuntamenti.reduce((s,a)=>s+parseFloat(a.prezzo||0),0);
-  const totOre=appuntamenti.reduce((s,a)=>s+parseFloat(a.durata||1),0);
-  const daPagare=appuntamenti.filter(a=>a.stato==='da-pagare').reduce((s,a)=>s+parseFloat(a.prezzo||0),0);
+  const totVendite=vendite.reduce((s,v)=>s+parseFloat(v.totale||0),0);
+  const totCosti=vendite.reduce((s,v)=>s+parseFloat(v.costo_totale||0),0);
   document.getElementById('admin-stats').innerHTML=
-    '<div class="admin-row"><div><div class="admin-row-name">Clienti registrati</div></div><div class="admin-row-val">'+clienti.length+'</div></div>'+
-    '<div class="admin-row"><div><div class="admin-row-name">Lavori totali</div></div><div class="admin-row-val">'+appuntamenti.length+'</div></div>'+
-    '<div class="admin-row"><div><div class="admin-row-name">Ore totali lavorate</div></div><div class="admin-row-val">'+fmtOre(totOre)+'</div></div>'+
-    '<div class="admin-row"><div><div class="admin-row-name">Guadagno storico</div></div><div class="admin-row-val">'+fmt(totGuadagno)+'</div></div>'+
-    '<div class="admin-row"><div><div class="admin-row-name">Da riscuotere</div></div><div class="admin-row-val" style="color:var(--warning)">'+fmt(daPagare)+'</div></div>';
+    '<div class="admin-row"><div><div class="admin-row-name">Vendite totali</div></div><div class="admin-row-val">'+vendite.length+'</div></div>'+
+    '<div class="admin-row"><div><div class="admin-row-name">Incasso storico</div></div><div class="admin-row-val">'+fmt(totVendite)+'</div></div>'+
+    '<div class="admin-row"><div><div class="admin-row-name">Margine storico</div></div><div class="admin-row-val" style="color:var(--success)">'+fmt(totVendite-totCosti)+'</div></div>'+
+    '<div class="admin-row"><div><div class="admin-row-name">Appuntamenti totali</div></div><div class="admin-row-val">'+appuntamenti.length+'</div></div>';
+
+  document.getElementById('admin-catalogo').innerHTML=prodotti.map(p=>'<div class="prod-item"><div><div class="prod-nome">'+p.nome+'</div><div class="prod-cat">'+p.categoria+'</div></div><div class="prod-prezzo">'+fmt(p.prezzo)+'</div><button class="prod-edit" onclick="apriModificaProdotto('+p.id+')">✏️</button></div>').join('')||'<div class="empty-state">Nessun servizio</div>';
+
+  buildOrariAdmin();
+}
+
+function buildOrariAdmin(){
+  const giorniNomi=['Domenica','Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato'];
+  let html='';
+  for(let i=0;i<7;i++){
+    const isChiuso=chiusureStd.includes(i);
+    html+='<div class="orario-row"><div class="orario-giorno">'+giorniNomi[i]+'</div>'+
+      '<div class="orario-toggle"><span class="toggle-lbl">'+(isChiuso?'Chiuso':'Aperto')+'</span>'+
+      '<button class="toggle-btn'+(isChiuso?'':' on')+'" id="tog-'+i+'" onclick="toggleGiorno('+i+')"></button></div>'+
+      '</div>';
+  }
+  document.getElementById('admin-orari').innerHTML=html;
+}
+
+function toggleGiorno(dow){
+  const idx=chiusureStd.indexOf(dow);
+  if(idx!==-1)chiusureStd.splice(idx,1);
+  else chiusureStd.push(dow);
+  buildOrariAdmin();
+}
+
+async function salvaOrari(){
+  await fetch(SB_URL+'/rest/v1/chiusure_standard?commerciante_id=eq.'+CID,{method:'DELETE',headers:H});
+  for(const dow of chiusureStd){await sbInsert('chiusure_standard',{commerciante_id:CID,giorno_settimana:dow});}
+  showToast('✓ Orari salvati');buildAgenda();
+}
+
+// ---- CATALOGO ADMIN ----
+function apriNuovoProdotto(){
+  prodEditId=null;
+  document.getElementById('prod-title').textContent='Nuovo servizio';
+  document.getElementById('p-nome').value='';
+  document.getElementById('p-cat').value='Taglio';
+  document.getElementById('p-prezzo').value='';
+  document.getElementById('p-costo').value='';
+  document.getElementById('btn-elimina-prod').style.display='none';
+  apriOverlay('prod-overlay');
+}
+
+function apriModificaProdotto(id){
+  const p=prodotti.find(x=>x.id===id);if(!p)return;
+  prodEditId=id;
+  document.getElementById('prod-title').textContent='Modifica servizio';
+  document.getElementById('p-nome').value=p.nome||'';
+  document.getElementById('p-cat').value=p.categoria||'Taglio';
+  document.getElementById('p-prezzo').value=p.prezzo||'';
+  document.getElementById('p-costo').value=p.costo||'';
+  document.getElementById('btn-elimina-prod').style.display='block';
+  apriOverlay('prod-overlay');
+}
+
+async function salvaProdotto(){
+  const nome=document.getElementById('p-nome').value.trim();
+  const prezzo=parseFloat(document.getElementById('p-prezzo').value)||0;
+  if(!nome||!prezzo){showToast('Inserisci nome e prezzo','err');return;}
+  const dati={commerciante_id:CID,nome,categoria:document.getElementById('p-cat').value,prezzo,costo:parseFloat(document.getElementById('p-costo').value)||0};
+  if(prodEditId){await sbUpdate('catalogo',prodEditId,dati);const i=prodotti.findIndex(x=>x.id===prodEditId);if(i!==-1)prodotti[i]={...prodotti[i],...dati};}
+  else{const n=await sbInsert('catalogo',dati);if(n&&n[0])prodotti.push(n[0]);}
+  chiudiOverlay('prod-overlay');buildAdmin();buildServiziGrid();showToast('✓ Servizio salvato');
+}
+
+async function eliminaProdotto(){
+  if(!confirm('Eliminare questo servizio?'))return;
+  await sbDelete('catalogo',prodEditId);
+  prodotti=prodotti.filter(x=>x.id!==prodEditId);
+  chiudiOverlay('prod-overlay');buildAdmin();buildServiziGrid();showToast('Servizio eliminato','err');
 }
 
 document.addEventListener('DOMContentLoaded',init);
